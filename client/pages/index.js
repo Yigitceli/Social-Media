@@ -3,8 +3,9 @@ import Image from "next/image";
 import Login from "./login";
 import styles from "../styles/Home.module.css";
 import Layout from "../components/Layout";
+import withAuth from "../services/useAuth";
 
-export default function Home() {
+function Home() {
   return (
     <div>
       <Head>
@@ -32,3 +33,4 @@ export default function Home() {
     </div>
   );
 }
+export default withAuth(Home);

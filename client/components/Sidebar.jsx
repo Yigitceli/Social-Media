@@ -12,11 +12,11 @@ const disActive =
   " duration-200 ml-5 ease-in-out capitalize flex items-center gap-3 cursor-pointer text-gray-500 hover:text-black transition-all";
 
 export default function Sidebar() {
-  const { user } = useSelector((state) => state.user.data);
+  const user = useSelector((state) => state.user?.data?.user);
   const Router = useRouter();
   useEffect(() => {}, [Router]);
   return (
-    <div className="flex justify-between h-screen shadow-md flex-col min-w-210">
+    <div className="  bg-white flex justify-between h-screen shadow-md flex-col min-w-210">
       <div className="flex flex-col">
         <img className="gap-2 my-7 mx-5" src="/logo.png" width={150} />
 
@@ -27,7 +27,7 @@ export default function Sidebar() {
               <p className="bold ">Home</p>
             </div>
           </Link>
-          <p className="ml-5 ">Discover Categories</p>
+          <p className="ml-5 md:text-lg">Discover Categories</p>
           {categories.map((item) => {
             return (
               <Link href={`/category/${item.name}`}>
@@ -53,8 +53,8 @@ export default function Sidebar() {
         </div>
       </div>
       <div className="my-4 mx-3 flex items-center">
-        <div className="flex gap-2 items-center cursor-pointer shadow-md w-full rounded-lg p-2">
-          {console.log(user)}
+        {user && <div className="flex gap-2 items-center cursor-pointer shadow-md w-full rounded-lg p-2">
+          
           <img
             src={user.photoURL}
             alt="profil-photo"
@@ -62,7 +62,7 @@ export default function Sidebar() {
           />
           <p>{user.displayName}</p>
           <IoIosArrowForward />
-        </div>
+        </div>}
       </div>
     </div>
   );

@@ -19,9 +19,10 @@ export default function Layout({ children }) {
           <Sidebar />
         </div>
       )}
-      <Navbar setIsOpen={setIsOpen} />
-
-      {children}
+      <div className="w-full h-full">
+        <Navbar setIsOpen={setIsOpen} />
+        {children}
+      </div>
     </div>
   );
 }

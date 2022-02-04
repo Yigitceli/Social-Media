@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   signInWithPopup,
   setPersistence,
@@ -22,13 +23,16 @@ function login() {
   const signWithGoogle = async () => {
     try {
       const data = await signInWithPopup(auth, provider);
-      dispatch(signIn(data));
+
+      const response = await axios.post("http://localhost:5000/user/login", {
+        displayName: data.user.displayName,
+        googleId: data.user.uid,
+        photoUrl: data.user.photoURL,
+      });
+      
+      dispatch(signIn({...data.user, saved:response.data.payload.saved}));
     } catch (error) {}
   };
-
-  useEffect(() => {
-    
-  }, []);
 
   return (
     <div className="relative w-100 h-screen bg-black">
