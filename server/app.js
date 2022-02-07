@@ -48,7 +48,7 @@ app.listen(5000, async () => {
       console.log("Connected");
     })
     .catch((err) => {
-      console.log("error");
+      console.log(err);
     });
 });
 

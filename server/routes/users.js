@@ -1,10 +1,12 @@
 var express = require("express");
 const { Mongoose } = require("mongoose");
 const User = require("../schemas/user.schema");
+const admin = require("../firebaseconfig");
+const verifyToken = require("../services/auth");
 
 var router = express.Router();
 
-/* GET users listing. */
+
 router.post("/login", async function (req, res, next) {
   const { googleId, displayName, photoUrl } = req.body;
 
@@ -39,6 +41,25 @@ router.get("/:googleId", async (req, res, next) => {
         .status(200)
         .json({ response: "User sucessfully found.", payload: user });
     return res.status(404).json({ response: "User does not exist." });
+  } catch (error) {
+    return res.status(500).send("Something Gone Wrong!");
+  }
+});
+
+router.put("/pin-save", verifyToken, async (req, res, next) => {
+  const { item } = req.body;
+
+  try {
+    const user = await User.findOne({ googleId: req.user.uid });
+
+    if (!user.saved.some((item2) => item2._id == item._id)) {
+      await User.updateOne(
+        { googleId: req.user.uid },
+        { $push: { saved: item } }
+      );
+    }
+
+    return res.status(200).json({ response: "Ping succesfully saved." });
   } catch (error) {
     return res.status(500).send("Something Gone Wrong!");
   }

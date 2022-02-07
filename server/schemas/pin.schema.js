@@ -1,15 +1,17 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const pinSchema = new Schema({
-    postedBy: {type:String},
-    destination: {type:String},
-    Title:{type: String},
-    description: {type:String},
-    comments: {type:Array},
-    createdAt: { type: Date, default: Date.now}
-})
+  postedBy: { type: Map },
+  destination: { type: String },
+  Title: { type: String },
+  description: { type: String },
+  comments: { type: Array },
+  createdAt: { type: Date, default: Date.now },
+  category: { type: String },
+  pinUrl: String,
+});
 
-const Pin = mongoose.model('Pin', pinSchema);
+const Pin = mongoose.model("Pin", pinSchema);
 
-module.exports = Pin
+module.exports = Pin;

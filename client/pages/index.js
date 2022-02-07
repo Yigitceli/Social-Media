@@ -4,33 +4,38 @@ import Login from "./login";
 import styles from "../styles/Home.module.css";
 import Layout from "../components/Layout";
 import withAuth from "../services/useAuth";
+import Feed from "../components/Feed";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { hydrateData } from "../redux/pinsSlice";
 
-function Home() {
+function Home({ data }) {
+  const dispatch = useDispatch();
+
+  useEffect(async () => {
+    dispatch(hydrateData(data));
+  }, []);
+
   return (
     <div>
-      <Head>
-        <link rel="icon" href="%PUBLIC_URL%/favicon.png" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#000000" />
-        <meta
-          name="description"
-          content="Web site created using create-react-app"
-        />
-        <link rel="apple-touch-icon" href="%PUBLIC_URL%/favicon.png" />
-
-        <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Lato&display=swap"
-          rel="stylesheet"
-        />
-        <title>ShareWith</title>
-      </Head>
-      <Layout></Layout>
+      <Layout>
+        <Feed />
+      </Layout>
     </div>
   );
 }
 export default withAuth(Home);
+
+export async function getServerSideProps(context) {
+  try {
+    const { data } = await axios.get("http://localhost:5000/pin");
+    return {
+      props: { data: data.payload }, // will be passed to the page component as props
+    };
+  } catch (error) {
+    return {
+      props: { data: [] }, // will be passed to the page component as props
+    };
+  }
+}
