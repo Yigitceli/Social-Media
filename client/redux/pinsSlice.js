@@ -76,7 +76,7 @@ export const fetchPins = createAsyncThunk(
   async (data, thunkAPI) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/pin?category=${data.slug}`,        
+        `http://localhost:5000/pin?category=${data.slug}`,
         {
           headers: {
             Authorization:
@@ -95,6 +95,7 @@ export const fetchPins = createAsyncThunk(
 const pinsSlice = createSlice({
   name: "pins",
   initialState: {
+    isLoading: true,
     data: [],
   },
   reducers: {
@@ -111,8 +112,17 @@ const pinsSlice = createSlice({
         return item._id != action.payload._id;
       });
     });
+    builder.addCase(fetchPins.pending, (state, action) => {
+      state.isLoading = true;
+      state.data = [];
+    });
     builder.addCase(fetchPins.fulfilled, (state, action) => {
-      state.data = action.payload
+      state.isLoading = false;
+      state.data = action.payload;
+    });
+    builder.addCase(fetchPins.rejected, (state, action) => {
+      state.isLoading = false;
+      state.data = [];
     });
   },
 });

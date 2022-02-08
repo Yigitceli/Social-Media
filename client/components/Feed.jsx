@@ -17,6 +17,7 @@ const Feed = ({ data }) => {
   const pins = useSelector((state) => state.pins.data);
   const Router = useRouter();
   const user = useSelector((state) => state.user.data);
+  
 
   if (data)
     return (

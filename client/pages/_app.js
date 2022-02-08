@@ -4,6 +4,7 @@ import store from "../store";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 import withAuth from "../services/useAuth";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 
 let persistor = persistStore(store);

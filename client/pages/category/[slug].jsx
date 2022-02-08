@@ -8,13 +8,15 @@ import Layout from "../../components/Layout";
 import { fetchPins } from "../../redux/pinsSlice";
 import withAuth from "../../services/useAuth";
 
+import PageLoading from "../../components/PageLoading";
+
 const Category = () => {
   const [loading, setLoading] = useState(true);
   const Router = useRouter();
   const dispatch = useDispatch();
   const { slug } = Router.query;
-  const { data } = useSelector((state) => state.pins);
-  useEffect(() => {    
+  const { data, isLoading } = useSelector((state) => state.pins);
+  useEffect(() => {
     if (slug) {
       dispatch(fetchPins({ slug }));
     }
@@ -22,7 +24,11 @@ const Category = () => {
 
   return (
     <Layout>
-      <Feed data={data} />
+      {isLoading ? (
+        <PageLoading message="Getting Pins..." />
+      ) : (
+        <Feed data={data} />
+      )}
     </Layout>
   );
 };

@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import Feed from "../../components/Feed";
+
 import ProfilLayout from "../../components/ProfilLayout";
 
 const active = "font-bold bg-redColor text-white p-2 px-4 rounded-full";
@@ -26,7 +27,7 @@ const UserId = () => {
       const userData = await axios.get(`http://localhost:5000/user/${userId}`);
       const pinData = await axios.get(
         `http://localhost:5000/pin?userId=${userId}`
-      );    
+      );
       setUser(userData.data.payload);
       setPins(pinData.data.payload);
       setIsLoading(false);
@@ -37,9 +38,7 @@ const UserId = () => {
     <ProfilLayout>
       <div className="">
         {isLoading ? (
-          <div className="w-full h-screen flex items-center justify-center">
-            Loading
-          </div>
+          <PageLoading message="Getting User Data..." />
         ) : (
           <div className="flex flex-col">
             <img
@@ -65,7 +64,7 @@ const UserId = () => {
                 </button>
               </div>
 
-              <div>                
+              <div>
                 {isActive ? (
                   <Feed user={userData} data={pins} />
                 ) : (
