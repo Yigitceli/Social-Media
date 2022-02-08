@@ -32,12 +32,14 @@ export default function Navbar({ setIsOpen }) {
           />
         </div>
         {user && (
-          <img
-            src={user.photoURL}
-            className="cursor-pointer w-14 h-12 rounded-lg hidden md:block"
-          />
+          <Link href={`user/${user.uid}`}>
+            <img
+              src={user.photoURL}
+              className="cursor-pointer w-14 h-12 rounded-lg hidden md:block"
+            />
+          </Link>
         )}
-        <Link href={'/create-pin'}>
+        <Link href={"/create-pin"}>
           <div className="bg-black md:h-12 h-12 cursor-pointer flex w-12 md:w-14 items-center justify-center rounded-lg">
             <IoMdAdd className="text-white" fontSize={20} />
           </div>

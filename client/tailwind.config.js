@@ -4,7 +4,7 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   media: false, // or 'media' or 'class'
-  theme: {    
+  theme: {
     extend: {
       margin: {
         320: "320px",
@@ -51,6 +51,7 @@ module.exports = {
         mainColor: "#FBF8F9",
         secondaryColor: "#F0F0F0",
         blackOverlay: "rgba(0, 0 ,0 ,0.7)",
+        redColor: "#f04444",
       },
       keyframes: {
         "slide-in": {

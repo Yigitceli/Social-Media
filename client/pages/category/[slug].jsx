@@ -4,12 +4,11 @@ import React, { useEffect } from "react";
 import Layout from "../../components/Layout";
 import withAuth from "../../services/useAuth";
 
-const slug = () => {
+const Category = () => {
   const Router = useRouter();
 
   return (
     <Layout>
-      
       <div>Category</div>
     </Layout>
   );

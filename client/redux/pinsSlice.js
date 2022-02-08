@@ -23,15 +23,6 @@ export const createPin = createAsyncThunk(
   "pins/createPin",
   async (data, thunkAPI) => {
     try {
-      const jsonData = {
-        postedBy: data.user,        
-        title: data.title,
-        description: data.description,
-        destination: data.destination,
-        category: data.category,
-      };
-      
-
       const response = await axios.post(
         `http://localhost:5000/pin`,
         {
@@ -39,7 +30,7 @@ export const createPin = createAsyncThunk(
           title: data.title,
           description: data.description,
           destination: data.destination,
-          category: data.category,          
+          category: data.category,
         },
         {
           headers: {
@@ -49,6 +40,29 @@ export const createPin = createAsyncThunk(
         }
       );
 
+      return response.data.payload;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const makeComment = createAsyncThunk(
+  "pins/makeComment",
+  async (data, thunkAPI) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/pin/${data.pinId}/comment`,
+        {
+          comment: data.comment,
+        },
+        {
+          headers: {
+            Authorization:
+              "Bearer " + thunkAPI.getState().user.data.accessToken,
+          },
+        }
+      );
 
       return response.data.payload;
     } catch (error) {
@@ -60,6 +74,7 @@ export const createPin = createAsyncThunk(
 const pinsSlice = createSlice({
   name: "pins",
   initialState: {
+    
     data: [],
   },
   reducers: {
@@ -75,7 +90,7 @@ const pinsSlice = createSlice({
       state.data = state.data.filter((item) => {
         return item._id != action.payload._id;
       });
-    });
+    });    
   },
 });
 

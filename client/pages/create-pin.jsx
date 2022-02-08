@@ -19,6 +19,7 @@ import { MdDelete } from "react-icons/md";
 export default function CreatePin() {
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState("");
+  const [progress, setProggres] = useState(0);
   const [description, setDescription] = useState("");
   const [destination, setDestination] = useState("");
   const [category, setCategory] = useState("");
@@ -30,7 +31,9 @@ export default function CreatePin() {
     setImage(e.target.files[0]);
   };
 
-  useEffect(() => {}, [image]);
+  useEffect(() => {
+    console.log(progress);
+  }, [progress]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -43,7 +46,7 @@ export default function CreatePin() {
         (snapshot) => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
+          setProggres(progress);
           switch (snapshot.state) {
             case "paused":
               console.log("Upload is paused");
@@ -57,12 +60,11 @@ export default function CreatePin() {
           console.log(error);
         },
         () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((imageUrl) => {            
-            
+          getDownloadURL(uploadTask.snapshot.ref).then((imageUrl) => {
             dispatch(
               createPin({
                 imageUrl,
-                title,                
+                title,
                 description,
                 destination,
                 category,
@@ -83,13 +85,26 @@ export default function CreatePin() {
   return (
     <Layout>
       <div className="flex lg:h-3/4 h-screen w-full justify-center p-5  ">
-        <form onSubmit={submitHandler}>
+        <form onSubmit={submitHandler} className="w-full">
           <div className="gap-4 lg:h-3/4 h:full flex lg:w-5/6 w-full bg-white p-3 lg:flex-row flex-col">
             <label htmlFor="pin-photo">
               <div className="relative cursor-pointer lg:w-full lg:h-full h-420 flex flex-col items-center bg-secondaryColor justify-center p-3">
                 <div className="border-dotted border-2 border-gray-300 w-full h-full flex flex-col justify-evenly items-center p-3">
                   {isLoading ? (
-                    <p>Uploading</p>
+                    <div className="flex flex-col w-full h-full items-center justify-end">
+                      <p>Loading</p>
+                      <div className="w-full h-2/4 flex items-end">
+                        <div className="w-full h-5 bg-mainColor rounded-lg relative">
+                          <div
+                            className={`flex h-full bg-redColor rounded-lg`}
+                            style={{ width: `${progress}%` }}
+                          ></div>
+                          <div className="w-full top-0 right-0 h-full absolute flex items-center justify-center">
+                            <p>Uploading: {progress}%</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   ) : (
                     <>
                       {image ? (
@@ -149,6 +164,7 @@ export default function CreatePin() {
                   onChange={(e) => setDestination(e.target.value)}
                   value={destination}
                   type={"text"}
+                  pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
                   placeholder="Add destination link"
                   className="border-b-2 p-2 text-lg border-gray-200 "
                 />

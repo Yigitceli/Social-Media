@@ -4,15 +4,8 @@ const verifyToken = require("../services/auth");
 const router = require("express").Router();
 
 router.post("/", verifyToken, async (req, res, next) => {
-  console.log("TEST");
   const { pinUrl, title, description, destination, category } = req.body;
-  if (
-    !pinUrl ||
-    !title ||    
-    !description ||
-    !destination ||
-    !category
-  )
+  if (!pinUrl || !title || !description || !destination || !category)
     return res.status(406).json({ response: "Invalid Inputs!" });
 
   try {
@@ -39,24 +32,31 @@ router.delete("/:id", async (req, res, next) => {
   }
 });
 
-router.put("/:id/comment", async (req, res, next) => {
-  const { postedBy, comment } = req.body;
+router.put("/:id/comment", verifyToken, async (req, res, next) => {
+  const { comment } = req.body;
   const { id } = req.params;
+  const postedBy = req.user;
   try {
-    await Pin.updateOne(
-      { _id: id },
-      { $push: { comments: { postedBy, comment } } }
+    const pin = await Pin.findByIdAndUpdate(
+      id,
+      {
+        $push: { comments: { postedBy, comment } },
+      },
+      { new: true }
     );
-    res.send(200);
+
+    res
+      .status(200)
+      .json({ response: "Comment successfully was made.", payload: pin });
   } catch (error) {
     res.status(500).json({ response: "Something went wrong!" });
   }
 });
 
 router.get("/", async (req, res, next) => {
-  const { category } = req.query;
+  const { category, userId } = req.query;
   try {
-    if (!category) {
+    if (!category && !userId) {
       const pins = await Pin.find();
       if (pins.length > 0)
         return res
@@ -65,6 +65,18 @@ router.get("/", async (req, res, next) => {
 
       return res.status(404).json({ response: "Pins can't be found." });
     }
+
+    if (userId) {
+      const pins = await Pin.find({
+        "postedBy.uid": userId,
+      });
+
+      if (pins.length <= 0)
+        return res.status(404).json({ response: "No pins found!" });
+
+      return res.status(200).json({ response: "Pins found!", payload: pins });
+    }
+
     const pins = await Pin.find({ category });
     if (pins.length > 0)
       return res
