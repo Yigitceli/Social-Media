@@ -15,8 +15,7 @@ export default function Pin({ item, user }) {
   const [hovered, setHovered] = useState(false);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    console.log(user);
+  useEffect(() => {    
     if (user?.saved.some((item2) => item._id == item2._id)) setSaved(true);
   }, [item, user]);
 

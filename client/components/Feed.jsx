@@ -26,7 +26,7 @@ const Feed = ({ data }) => {
         breakpointCols={breakpointColumnsObj}
       >
         {data?.map((item) => {
-          return <Pin item={item} />;
+          return <Pin user={user} item={item} />;
         })}
       </Masonry>
     );

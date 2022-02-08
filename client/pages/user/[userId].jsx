@@ -26,8 +26,7 @@ const UserId = () => {
       const userData = await axios.get(`http://localhost:5000/user/${userId}`);
       const pinData = await axios.get(
         `http://localhost:5000/pin?userId=${userId}`
-      );
-      console.log(userData.data.payload);
+      );    
       setUser(userData.data.payload);
       setPins(pinData.data.payload);
       setIsLoading(false);
@@ -66,8 +65,7 @@ const UserId = () => {
                 </button>
               </div>
 
-              <div>
-                {console.log(pins)}
+              <div>                
                 {isActive ? (
                   <Feed user={userData} data={pins} />
                 ) : (

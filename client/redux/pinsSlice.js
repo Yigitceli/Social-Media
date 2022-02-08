@@ -71,10 +71,30 @@ export const makeComment = createAsyncThunk(
   }
 );
 
+export const fetchPins = createAsyncThunk(
+  "pins/fetchPins",
+  async (data, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/pin?category=${data.slug}`,        
+        {
+          headers: {
+            Authorization:
+              "Bearer " + thunkAPI.getState().user.data.accessToken,
+          },
+        }
+      );
+
+      return response.data.payload;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 const pinsSlice = createSlice({
   name: "pins",
   initialState: {
-    
     data: [],
   },
   reducers: {
@@ -90,7 +110,10 @@ const pinsSlice = createSlice({
       state.data = state.data.filter((item) => {
         return item._id != action.payload._id;
       });
-    });    
+    });
+    builder.addCase(fetchPins.fulfilled, (state, action) => {
+      state.data = action.payload
+    });
   },
 });
 
