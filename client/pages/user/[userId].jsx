@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import Feed from "../../components/Feed";
+import PageLoading from "../../components/PageLoading";
 
 import ProfilLayout from "../../components/ProfilLayout";
 
@@ -24,13 +25,20 @@ const UserId = () => {
   useEffect(async () => {
     if (userId) {
       setIsLoading(true);
-      const userData = await axios.get(`http://localhost:5000/user/${userId}`);
-      const pinData = await axios.get(
-        `http://localhost:5000/pin?userId=${userId}`
-      );
-      setUser(userData.data.payload);
-      setPins(pinData.data.payload);
-      setIsLoading(false);
+      try {
+        const userData = await axios.get(
+          `http://localhost:5000/user/${userId}`
+        );
+        setUser(userData.data.payload);
+        const pinData = await axios.get(
+          `http://localhost:5000/pin?userId=${userId}`
+        );
+        setPins(pinData.data.payload);
+        setIsLoading(false);
+      } catch (error) {
+        setPins([]);
+        setIsLoading(false);
+      }
     }
   }, [userId]);
 

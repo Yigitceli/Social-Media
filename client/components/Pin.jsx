@@ -4,18 +4,22 @@ import { AiTwotoneDelete } from "react-icons/ai";
 import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { save, savePin } from "../redux/userSlice";
 import { deletePin } from "../redux/pinsSlice";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import ReactLoading from 'react-loading';
 
 export default function Pin({ item, user }) {
   const [saved, setSaved] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const { isSaving } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const Router = useRouter();
 
-  useEffect(() => {    
+  useEffect(() => {
     if (user?.saved.some((item2) => item._id == item2._id)) setSaved(true);
   }, [item, user]);
 
@@ -27,6 +31,7 @@ export default function Pin({ item, user }) {
   const handleDeleteClick = async (e) => {
     e.stopPropagation();
     dispatch(deletePin(item));
+    Router.reload(window.location.pathname);
   };
 
   return (
@@ -54,7 +59,11 @@ export default function Pin({ item, user }) {
                 onClick={handleSaveClick}
                 className="absolute top-2 right-2 bg-red-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-3xl"
               >
-                Save
+                {isSaving ? (
+                  <ReactLoading type={"spin"} color={"white"} width={25} height={25}/>
+                ) : (
+                  "Save"
+                )}
               </button>
             ) : (
               <button
@@ -71,9 +80,9 @@ export default function Pin({ item, user }) {
               className="absolute bottom-2 opacity-75 hover:opacity-100 left-2 bg-white flex items-center gap-1 p-2 rounded-full justfiy-evenly"
             >
               <BsFillArrowUpRightCircleFill />
-              <p className="font-bold">{item.destination}</p>
+              <p className="font-bold">{item.destination.slice(8, 16)}...</p>
             </a>
-            {item.postedBy.uid == user?.googleId && (
+            {item.postedBy.uid == user?.uid && (
               <div
                 onClick={handleDeleteClick}
                 className="absolute bottom-2 right-2 bg-white opacity-75 hover:opacity-100 rounded-full p-2"

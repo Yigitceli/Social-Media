@@ -27,7 +27,9 @@ export const savePin = createAsyncThunk(
 const userSlice = createSlice({
   name: "user",
   initialState: {
+    isSaving: false,
     data: null,
+    isSaveError: false,
   },
   reducers: {
     signIn: (state, action) => {
@@ -48,6 +50,23 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(savePin.fulfilled, (state, action) => {
+      state.isSaving = false;
+      state.isSaveError = false;
+      if (
+        !state.data.saved.some((item) => {
+          return item._id == action.payload._id;
+        })
+      ) {
+        state.data.saved.push(action.payload);
+      }
+    });
+    builder.addCase(savePin.pending, (state, action) => {
+      state.isSaving = true;
+      state.isSaveError = false;
+    });
+    builder.addCase(savePin.rejected, (state, action) => {
+      state.isSaving = false;
+      state.isSaveError = true;
       if (
         !state.data.saved.some((item) => {
           return item._id == action.payload._id;

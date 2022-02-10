@@ -6,12 +6,14 @@ import Layout from "../components/Layout";
 import withAuth from "../services/useAuth";
 import Feed from "../components/Feed";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { hydrateData } from "../redux/pinsSlice";
+import PageLoading from "../components/PageLoading";
 
 function Home({ data }) {
   const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.pins);
 
   useEffect(async () => {
     dispatch(hydrateData(data));
@@ -19,9 +21,7 @@ function Home({ data }) {
 
   return (
     <div>
-      <Layout>
-        <Feed />
-      </Layout>
+      <Layout>{isLoading ? <PageLoading message={'Getting pins data...'}/> : <Feed />}</Layout>
     </div>
   );
 }

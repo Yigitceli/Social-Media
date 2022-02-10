@@ -3,6 +3,7 @@ import { HiMenu } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { IoMdAdd, IoMdSearch } from "react-icons/io";
 import Link from "next/link";
+import SearchBar from "./SearchBar";
 
 export default function Navbar({ setIsOpen }) {
   const user = useSelector((state) => state.user?.data);
@@ -23,14 +24,7 @@ export default function Navbar({ setIsOpen }) {
         )}
       </div>
       <div className="my-5 px-4 flex w-full gap-2">
-        <div className="flex bg-white items-center gap-2 px-3 py-3 rounded-lg w-full">
-          <IoMdSearch fontSize={21} />
-          <input
-            type={"text"}
-            placeholder="Search"
-            className="outline-none w-full"
-          />
-        </div>
+        <SearchBar/>
         {user && (
           <Link href={`user/${user.uid}`}>
             <img

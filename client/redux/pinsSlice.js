@@ -47,6 +47,22 @@ export const createPin = createAsyncThunk(
   }
 );
 
+export const searchPin = createAsyncThunk(
+  "pins/searchPin",
+  async (searchValue, thunkAPI) => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:5000/pin/search?query=${searchValue}`
+      );
+      console.log(data.payload);
+
+      return data.payload;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 export const makeComment = createAsyncThunk(
   "pins/makeComment",
   async (data, thunkAPI) => {
@@ -95,7 +111,8 @@ export const fetchPins = createAsyncThunk(
 const pinsSlice = createSlice({
   name: "pins",
   initialState: {
-    isLoading: true,
+    isLoading: false,
+    isError: false,
     data: [],
   },
   reducers: {
@@ -114,14 +131,32 @@ const pinsSlice = createSlice({
     });
     builder.addCase(fetchPins.pending, (state, action) => {
       state.isLoading = true;
+      state.isError = false;
       state.data = [];
     });
     builder.addCase(fetchPins.fulfilled, (state, action) => {
       state.isLoading = false;
+      state.isError = false;
       state.data = action.payload;
     });
     builder.addCase(fetchPins.rejected, (state, action) => {
       state.isLoading = false;
+      state.isError = true;
+      state.data = [];
+    });
+    builder.addCase(searchPin.pending, (state, action) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.data = [];
+    });
+    builder.addCase(searchPin.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.data = action.payload;
+    });
+    builder.addCase(searchPin.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
       state.data = [];
     });
   },

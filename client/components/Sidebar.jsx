@@ -15,8 +15,6 @@ export default function Sidebar() {
   const user = useSelector((state) => state.user?.data);
   const Router = useRouter();
 
-
-
   return (
     <div className="bg-white flex justify-between h-screen shadow-md flex-col min-w-210">
       <div className="flex flex-col">
@@ -54,15 +52,17 @@ export default function Sidebar() {
       </div>
       <div className="my-4 mx-3 flex items-center">
         {user && (
-          <div className="flex gap-2 items-center cursor-pointer shadow-md w-full rounded-lg p-2">
-            <img
-              src={user.photoURL}
-              alt="profil-photo"
-              className="rounded-full w-10 h-10"
-            />
-            <p>{user.displayName}</p>
-            <IoIosArrowForward />
-          </div>
+          <Link href={`user/${user.uid}`}>
+            <div className="flex gap-2 items-center cursor-pointer shadow-md w-full rounded-lg p-2">
+              <img
+                src={user.photoURL}
+                alt="profil-photo"
+                className="rounded-full w-10 h-10"
+              />
+              <p>{user.displayName}</p>
+              <IoIosArrowForward />
+            </div>
+          </Link>
         )}
       </div>
     </div>
