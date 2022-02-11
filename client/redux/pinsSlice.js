@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios from "../axios";
 
 export const deletePin = createAsyncThunk(
   "pins/deletePin",
@@ -52,7 +52,13 @@ export const searchPin = createAsyncThunk(
   async (searchValue, thunkAPI) => {
     try {
       const { data } = await axios.get(
-        `http://localhost:5000/pin/search?query=${searchValue}`
+        `http://localhost:5000/pin/search?query=${searchValue}`,
+        {
+          headers: {
+            Authorization:
+              "Bearer " + JSON.parse(window.localStorage.getItem("accessToken")),
+          },
+        }
       );
       console.log(data.payload);
 

@@ -62,7 +62,7 @@ router.put("/:id/comment", verifyToken, async (req, res, next) => {
   }
 });
 
-router.get("/", async (req, res, next) => {
+router.get("/",  async (req, res, next) => {
   const { category, userId } = req.query;
   try {
     if (!category && !userId) {
@@ -97,7 +97,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/search", async (req, res, next) => {
+router.get("/search", verifyToken, async (req, res, next) => {
   var { query } = req.query;
   query = query.toLowerCase();
   try {
@@ -127,7 +127,7 @@ router.get("/search", async (req, res, next) => {
   }
 });
 
-router.get("/:id", async (req, res, next) => {
+router.get("/:id", verifyToken, async (req, res, next) => {
   const { id } = req.params;
   try {
     const pin = await Pin.findById(id);
