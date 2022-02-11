@@ -7,7 +7,7 @@ const verifyToken = async (req, res, next) => {
     req.user = user;    
     next();
   } catch (error) {
-    return res.status(402).json({ response: "Unauthorized Access" });
+    return res.status(401).json({ response: "Unauthorized Access" });
   }
 };
 module.exports = verifyToken;
