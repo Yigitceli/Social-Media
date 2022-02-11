@@ -24,7 +24,8 @@ export default function Navbar({ setIsOpen }) {
         )}
       </div>
       <div className="my-5 px-4 flex w-full gap-2">
-        <SearchBar/>
+        {console.log(user.photoURL)}
+        <SearchBar />
         {user && (
           <Link href={`user/${user.uid}`}>
             <img

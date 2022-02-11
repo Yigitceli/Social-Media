@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import Layout from "../components/Layout";
+import { Audio } from "react-loader-spinner";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import { categories } from "../utils/data";
@@ -15,8 +16,9 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { createPin } from "../redux/pinsSlice";
 import { MdDelete } from "react-icons/md";
+import withAuth from "../services/useAuth";
 
-export default function CreatePin() {
+function CreatePin() {
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState("");
   const [progress, setProggres] = useState(0);
@@ -31,9 +33,6 @@ export default function CreatePin() {
     setImage(e.target.files[0]);
   };
 
-  useEffect(() => {
-    console.log(progress);
-  }, [progress]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -84,63 +83,71 @@ export default function CreatePin() {
 
   return (
     <Layout>
-      <div className="flex lg:h-3/4 h-screen w-full justify-center p-5  ">
+      <div className="flex justify-center lg:h-3/4 h-screen w-full p-5">
         <form onSubmit={submitHandler} className="w-full">
           <div className="gap-4 lg:h-3/4 h:full flex lg:w-5/6 w-full bg-white p-3 lg:flex-row flex-col">
-            <label htmlFor="pin-photo">
-              <div className="relative cursor-pointer lg:w-full lg:h-full h-420 flex flex-col items-center bg-secondaryColor justify-center p-3">
-                <div className="border-dotted border-2 border-gray-300 w-full h-full flex flex-col justify-evenly items-center p-3">
-                  {isLoading ? (
-                    <div className="flex flex-col w-full h-full items-center justify-end">
-                      <p>Loading</p>
-                      <div className="w-full h-2/4 flex items-end">
-                        <div className="w-full h-5 bg-mainColor rounded-lg relative">
-                          <div
-                            className={`flex h-full bg-redColor rounded-lg`}
-                            style={{ width: `${progress}%` }}
-                          ></div>
-                          <div className="w-full top-0 right-0 h-full absolute flex items-center justify-center">
-                            <p>Uploading: {progress}%</p>
+            <div className="lg:w-1/2 w-full">
+              <label htmlFor="pin-photo">
+                <div className="relative cursor-pointer lg:w-full lg:h-full h-420 flex flex-col items-center bg-secondaryColor justify-center p-3">
+                  <div className="border-dotted border-2 border-gray-300 w-full h-full flex flex-col justify-evenly items-center p-3">
+                    {isLoading ? (
+                      <div className="flex flex-col w-full h-full items-center justify-end">
+                        <Audio
+                          height={50}
+                          width={200}
+                          color="#00BFFF"
+                          ariaLabel="loading"
+                        />
+
+                        <div className="w-full h-2/4 flex items-end">
+                          <div className="w-full h-5 bg-mainColor rounded-lg relative">
+                            <div
+                              className={`flex h-full bg-redColor rounded-lg`}
+                              style={{ width: `${progress}%` }}
+                            ></div>
+                            <div className="w-full top-0 right-0 h-full absolute flex items-center justify-center">
+                              <p>Uploading: {progress}%</p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ) : (
-                    <>
-                      {image ? (
-                        <div className="w-full h-full">
-                          <img
-                            src={URL.createObjectURL(image)}
-                            className="w-full h-full"
-                          />
-                        </div>
-                      ) : (
-                        <>
-                          <div className="flex flex-col items-center">
-                            <AiOutlineCloudUpload fontSize={25} />
-                            <p>Click to upload</p>
+                    ) : (
+                      <>
+                        {image ? (
+                          <div className="w-full h-full">
+                            <img
+                              src={URL.createObjectURL(image)}
+                              className="w-full h-full"
+                            />
                           </div>
-                          <p className="text-gray-400">
-                            Recommendation: Use high-quality JPG, JPEG, SVG,
-                            PNG, GIF or TIFF less than 20MB
-                          </p>
-                        </>
-                      )}
-                    </>
-                  )}
+                        ) : (
+                          <>
+                            <div className="flex flex-col items-center">
+                              <AiOutlineCloudUpload fontSize={25} />
+                              <p>Click to upload</p>
+                            </div>
+                            <p className="text-gray-400">
+                              Recommendation: Use high-quality JPG, JPEG, SVG,
+                              PNG, GIF or TIFF less than 20MB
+                            </p>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <input
-                type="file"
-                name="pin-photo"
-                id="pin-photo"
-                className="w-0 h-0"
-                accept="image/*"
-                onChange={handlePhotoUpload}
-              />
-            </label>
+                <input
+                  type="file"
+                  name="pin-photo"
+                  id="pin-photo"
+                  className="w-0 h-0"
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                />
+              </label>
+            </div>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 lg:w-1/2 w-full">
               <div className="w-full h-full flex gap-5 flex-col lg:justify-center">
                 <div className="flex items-center gap-3">
                   <img src={user.photoURL} className="w-10 rounded-full" />
@@ -200,3 +207,5 @@ export default function CreatePin() {
     </Layout>
   );
 }
+
+export default withAuth(CreatePin);

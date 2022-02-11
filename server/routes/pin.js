@@ -49,7 +49,7 @@ router.put("/:id/comment", verifyToken, async (req, res, next) => {
     const pin = await Pin.findByIdAndUpdate(
       id,
       {
-        $push: { comments: { postedBy, comment } },
+        $push: { comments: { postedBy, comment, createdAt: Date.now() } },
       },
       { new: true }
     );
@@ -62,7 +62,7 @@ router.put("/:id/comment", verifyToken, async (req, res, next) => {
   }
 });
 
-router.get("/",  async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   const { category, userId } = req.query;
   try {
     if (!category && !userId) {
@@ -119,7 +119,7 @@ router.get("/search", verifyToken, async (req, res, next) => {
         return res
           .status(200)
           .json({ response: "Pins succesfully found.", payload: pins });
-          
+
       return res.status(404).json({ response: "Pins can't be found." });
     }
   } catch (error) {

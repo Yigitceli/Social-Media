@@ -3,9 +3,9 @@ const { Mongoose } = require("mongoose");
 const User = require("../schemas/user.schema");
 const admin = require("../firebaseconfig");
 const verifyToken = require("../services/auth");
+const { default: axios } = require("axios");
 
 var router = express.Router();
-
 
 router.post("/login", async function (req, res, next) {
   const { googleId, displayName, photoUrl } = req.body;
@@ -28,6 +28,24 @@ router.post("/login", async function (req, res, next) {
       .status(200)
       .json({ response: "Successfully logged in!", payload: user });
   } catch (error) {
+    return res.status(500).send("Something Gone Wrong!");
+  }
+});
+
+router.post("/refresh-token", async function (req, res, next) {
+  const { refreshToken } = req.body;
+  
+
+  try {
+    const { data } = await axios.post(
+      `https://securetoken.googleapis.com/v1/token?key=${process.env.API_KEY}`,
+      { grant_type: "refresh_token", refresh_token: refreshToken }
+    );    
+    return res
+      .status(200)
+      .json({ response: "Token renewed.", payload: data.access_token });
+  } catch (error) {
+    console.log(error);
     return res.status(500).send("Something Gone Wrong!");
   }
 });

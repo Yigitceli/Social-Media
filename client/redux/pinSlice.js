@@ -7,15 +7,11 @@ const pinSlice = createSlice({
     data: [],
   },
   reducers: {
-    reHydrate: (state, action) => {
-      state.data.comments.push({
-        postedBy: action.payload.postedBy,
-        comment: action.payload.comment,
-      });
+    reHydrate: (state, action) => {      
+      state.data.comments = action.payload;
     },
-    hydrateData: (state, action) => {      
+    hydrateData: (state, action) => {
       state.data = action.payload;
-     
     },
   },
   extraReducers: (builder) => {},

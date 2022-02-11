@@ -1,18 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../axios";
+import { reHydrate } from "./pinSlice";
 
 export const deletePin = createAsyncThunk(
   "pins/deletePin",
   async (pin, thunkAPI) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/pin/${pin._id}`,
-        {
-          headers: {
-            Authorization:
-              "Bearer " + thunkAPI.getState().user.data.accessToken,
-          },
-        }
+        `http://localhost:5000/pin/${pin._id}`        
       );
       return response.data.payload;
     } catch (error) {}
@@ -31,13 +26,7 @@ export const createPin = createAsyncThunk(
           description: data.description,
           destination: data.destination,
           category: data.category,
-        },
-        {
-          headers: {
-            Authorization:
-              "Bearer " + thunkAPI.getState().user.data.accessToken,
-          },
-        }
+        },        
       );
 
       return response.data.payload;
@@ -52,13 +41,8 @@ export const searchPin = createAsyncThunk(
   async (searchValue, thunkAPI) => {
     try {
       const { data } = await axios.get(
-        `http://localhost:5000/pin/search?query=${searchValue}`,
-        {
-          headers: {
-            Authorization:
-              "Bearer " + JSON.parse(window.localStorage.getItem("accessToken")),
-          },
-        }
+        `http://localhost:5000/pin/search?query=${searchValue}`
+        
       );
       console.log(data.payload);
 
@@ -73,19 +57,11 @@ export const makeComment = createAsyncThunk(
   "pins/makeComment",
   async (data, thunkAPI) => {
     try {
-      const response = await axios.put(
-        `http://localhost:5000/pin/${data.pinId}/comment`,
-        {
-          comment: data.comment,
-        },
-        {
-          headers: {
-            Authorization:
-              "Bearer " + thunkAPI.getState().user.data.accessToken,
-          },
-        }
-      );
-
+      const response = await axios.put(`pin/${data.pinId}/comment`, {
+        comment: data.comment,
+      });
+      
+      thunkAPI.dispatch(reHydrate(response.data.payload.comments));
       return response.data.payload;
     } catch (error) {
       console.log(error);
@@ -102,7 +78,8 @@ export const fetchPins = createAsyncThunk(
         {
           headers: {
             Authorization:
-              "Bearer " + thunkAPI.getState().user.data.accessToken,
+              "Bearer " +
+              JSON.parse(window.localStorage.getItem("accessToken")),
           },
         }
       );
@@ -130,6 +107,7 @@ const pinsSlice = createSlice({
     builder.addCase(createPin.fulfilled, (state, action) => {
       state.data.push(action.payload);
     });
+
     builder.addCase(deletePin.fulfilled, (state, action) => {
       state.data = state.data.filter((item) => {
         return item._id != action.payload._id;

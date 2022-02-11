@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -9,26 +9,30 @@ import { makeComment } from "../../redux/pinsSlice";
 import { hydrateData, reHydrate } from "../../redux/pinSlice";
 import Link from "next/link";
 import PageLoading from "../../components/PageLoading";
+import withAuth from "../../services/useAuth";
 
-export default function id({ data }) {
+function id() {
   const [comment, setComment] = useState("");
   const pin = useSelector((state) => state.pin.data);
 
   const user = useSelector((state) => state.user.data);
-  const Router = useRouter();
+  const { query } = useRouter();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setLoading(true);
-    dispatch(hydrateData(data));
-    setLoading(false);
-  }, [data]);
+  useEffect(async () => {
+    if (query.id) {
+      const { data } = await axios.get(`http://localhost:5000/pin/${query.id}`);
+      setLoading(true);
+      dispatch(hydrateData(data));
+      setLoading(false);
+    }
+  }, [query]);
 
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(makeComment({ user, pinId: pin._id, comment }));
-    dispatch(reHydrate({ postedBy: user, comment }));
+    setComment("");
   };
 
   return (
@@ -79,15 +83,20 @@ export default function id({ data }) {
                     </button>
                   </form>
                   <div className="flex flex-col gap-3 max-h-60 overflow-y-auto">
-                    {pin.comments.map((item) => (
-                      <div className="flex gap-3 items-center">
-                        <img
-                          className="rounded-full w-12"
-                          src={item.postedBy.picture}
-                        />
-                        <p>{item.comment}</p>
-                      </div>
-                    ))}
+                    {pin.comments
+                      .slice()
+                      .sort((f, s) => s.createdAt - f.createdAt)
+                      .map((item) => {
+                        return (
+                          <div className="flex gap-3 items-center">
+                            <img
+                              className="rounded-full w-12"
+                              src={item.postedBy.picture}
+                            />
+                            <p>{item.comment}</p>
+                          </div>
+                        );
+                      })}
                   </div>
                 </div>
               </div>
@@ -101,24 +110,4 @@ export default function id({ data }) {
   );
 }
 
-export async function getServerSideProps(context) {
-  try {
-    const pin = await axios.get(
-      `http://localhost:5000/pin/${context.query.id}`
-    );
-
-    return {
-      props: {
-        data: pin.data,
-      },
-    };
-  } catch (error) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/",
-      },
-      props: {},
-    };
-  }
-}
+export default withAuth(id);

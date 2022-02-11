@@ -8,10 +8,10 @@ const instance = axios.create({
 });
 instance.interceptors.request.use(
   (config) => {
-    const token = window.localStorage.getItem("accessToken");
+    const token = JSON.parse(window.localStorage.getItem("accessToken"));
     if (token) {
       // config.headers["Authorization"] = 'Bearer ' + token;  // for Spring Boot back-end
-      config.headers["x-access-token"] = token; // for Node.js Express back-end
+      config.headers["authorization"] = token; // for Node.js Express back-end
     }
     return config;
   },
@@ -30,13 +30,16 @@ instance.interceptors.response.use(
       if (err.response.status === 401 && !originalConfig._retry) {
         originalConfig._retry = true;
         try {
-          const rs = await instance.post("/auth/refreshtoken", {
-            refreshToken: window.localStorage.getItem("refreshToken"),
+          const rs = await instance.post("user/refresh-token", {
+            refreshToken: JSON.parse(
+              window.localStorage.getItem("refreshToken")
+            ),
           });
-          const { accessToken } = rs.data;
+          const {access_token} = rs.data.payload;
+          
           window.localStorage.setItem(
             "acessToken",
-            JSON.stringify(accessToken)
+            JSON.stringify(access_token)
           );
           return instance(originalConfig);
         } catch (_error) {

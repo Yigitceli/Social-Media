@@ -6,8 +6,13 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import Feed from "../../components/Feed";
 import PageLoading from "../../components/PageLoading";
-
+import { AiOutlineLogout } from "react-icons/ai";
 import ProfilLayout from "../../components/ProfilLayout";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/userSlice";
+import { auth } from "../../firebaseconfig";
+import { signOut } from "firebase/auth";
+import withAuth from "../../services/useAuth";
 
 const active = "font-bold bg-redColor text-white p-2 px-4 rounded-full";
 const disActive = "font-bold bg-white text-black p-2 px-4 rounded-full";
@@ -19,6 +24,7 @@ const UserId = () => {
   const [user, setUser] = useState(null);
   const [pins, setPins] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
 
   const { userId } = Router.query;
 
@@ -35,12 +41,17 @@ const UserId = () => {
         );
         setPins(pinData.data.payload);
         setIsLoading(false);
-      } catch (error) {
+      } catch (error) {        
         setPins([]);
         setIsLoading(false);
       }
     }
   }, [userId]);
+
+  const logOutHandler = async () => {
+    dispatch(logout());
+    await signOut(auth);
+  };
 
   return (
     <ProfilLayout>
@@ -48,12 +59,19 @@ const UserId = () => {
         {isLoading ? (
           <PageLoading message="Getting User Data..." />
         ) : (
-          <div className="flex flex-col">
+          <div className="flex flex-col relative">
             <img
               className=" w-full h-370 2xl:h-510 shadow-lg object-cover"
               src="https://source.unsplash.com/1600x900/?nature,photography,technology"
               alt="user-pic"
             />
+            <button
+              onClick={logOutHandler}
+              className="top-3 right-5 bg-white rounded-full bg-white p-2 absolute"
+            >
+              <AiOutlineLogout color="red" />
+            </button>
+
             <div className="w-full flex items-center flex-col gap-5 -my-10">
               <img src={user?.photoUrl} className="w-20 rounded-full" />
               <h3 className="font-bold text-3xl">{user?.displayName}</h3>
@@ -87,4 +105,4 @@ const UserId = () => {
   );
 };
 
-export default UserId;
+export default withAuth(UserId);

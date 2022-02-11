@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios from "../axios";
 
 export const savePin = createAsyncThunk(
   "user/savePin",
@@ -9,13 +9,7 @@ export const savePin = createAsyncThunk(
         `http://localhost:5000/user/pin-save`,
         {
           item: item,
-        },
-        {
-          headers: {
-            Authorization:
-              "Bearer " + thunkAPI.getState().user.data.accessToken,
-          },
-        }
+        }        
       );
       return item;
     } catch (error) {
@@ -37,6 +31,8 @@ const userSlice = createSlice({
     },
     logout: (state, action) => {
       state.data = null;
+      window.localStorage.removeItem("accessToken");
+      window.localStorage.removeItem("refreshToken");
     },
     save: (state, action) => {
       if (
