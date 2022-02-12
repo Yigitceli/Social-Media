@@ -5,6 +5,7 @@ import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
 import pinsSlice from "./redux/pinsSlice";
 import pinSlice from "./redux/pinSlice";
+import profileSlice from "./redux/profileSlice";
 
 const persistConfig = {
   key: "user",
@@ -18,6 +19,7 @@ const store = configureStore({
     user: persistedUserReducer,
     pins: pinsSlice,
     pin: pinSlice,
+    profile: profileSlice
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),

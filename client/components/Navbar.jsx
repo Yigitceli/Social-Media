@@ -23,11 +23,10 @@ export default function Navbar({ setIsOpen }) {
           />
         )}
       </div>
-      <div className="my-5 px-4 flex w-full gap-2">
-        {console.log(user.photoURL)}
+      <div className="my-5 px-4 flex w-full gap-2">        
         <SearchBar />
         {user && (
-          <Link href={`user/${user.uid}`}>
+          <Link href={`/user/${user.uid}`}>
             <img
               src={user.photoURL}
               className="cursor-pointer w-14 h-12 rounded-lg hidden md:block"

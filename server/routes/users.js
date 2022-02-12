@@ -34,18 +34,17 @@ router.post("/login", async function (req, res, next) {
 
 router.post("/refresh-token", async function (req, res, next) {
   const { refreshToken } = req.body;
-  
 
   try {
     const { data } = await axios.post(
       `https://securetoken.googleapis.com/v1/token?key=${process.env.API_KEY}`,
       { grant_type: "refresh_token", refresh_token: refreshToken }
-    );    
+    );
     return res
       .status(200)
       .json({ response: "Token renewed.", payload: data.access_token });
   } catch (error) {
-    console.log(error);
+   
     return res.status(500).send("Something Gone Wrong!");
   }
 });
@@ -54,10 +53,13 @@ router.get("/:googleId", async (req, res, next) => {
   const { googleId } = req.params;
   try {
     const user = await User.findOne({ googleId });
-    if (user)
+
+    if (user) {      
       return res
-        .status(200)
+        .status(202)
         .json({ response: "User sucessfully found.", payload: user });
+    }
+
     return res.status(404).json({ response: "User does not exist." });
   } catch (error) {
     return res.status(500).send("Something Gone Wrong!");

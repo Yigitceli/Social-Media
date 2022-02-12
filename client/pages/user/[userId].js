@@ -13,44 +13,29 @@ import { logout } from "../../redux/userSlice";
 import { auth } from "../../firebaseconfig";
 import { signOut } from "firebase/auth";
 import withAuth from "../../services/useAuth";
+import { fetchProfileData } from "../../redux/profileSlice";
 
 const active = "font-bold bg-redColor text-white p-2 px-4 rounded-full";
 const disActive = "font-bold bg-white text-black p-2 px-4 rounded-full";
 
 const UserId = () => {
-  const userData = useSelector((state) => state.user.data);
+  const { user, saved, pins, isLoading, isError } = useSelector(
+    (state) => state.profile
+  );
   const [isActive, setIsActive] = useState(true);
   const Router = useRouter();
-  const [user, setUser] = useState(null);
-  const [pins, setPins] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
-
   const { userId } = Router.query;
 
   useEffect(async () => {
-    if (userId) {
-      setIsLoading(true);
-      try {
-        const userData = await axios.get(
-          `http://localhost:5000/user/${userId}`
-        );
-        setUser(userData.data.payload);
-        const pinData = await axios.get(
-          `http://localhost:5000/pin?userId=${userId}`
-        );
-        setPins(pinData.data.payload);
-        setIsLoading(false);
-      } catch (error) {        
-        setPins([]);
-        setIsLoading(false);
-      }
-    }
+    if (userId) dispatch(fetchProfileData(userId));
   }, [userId]);
 
-  const logOutHandler = async () => {
+  const logOutHandler = () => {
     dispatch(logout());
-    await signOut(auth);
+    signOut(auth).then(() => {
+      window.location.assign("https://www.google.com/accounts/Logout");
+    });
   };
 
   return (
@@ -92,9 +77,9 @@ const UserId = () => {
 
               <div>
                 {isActive ? (
-                  <Feed user={userData} data={pins} />
+                  <Feed user={user} data={pins} />
                 ) : (
-                  <Feed user={userData} data={user.saved} />
+                  <Feed user={user} data={saved} />
                 )}
               </div>
             </div>

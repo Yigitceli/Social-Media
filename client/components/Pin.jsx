@@ -10,7 +10,7 @@ import { save, savePin } from "../redux/userSlice";
 import { deletePin } from "../redux/pinsSlice";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import ReactLoading from 'react-loading';
+import ReactLoading from "react-loading";
 
 export default function Pin({ item, user }) {
   const [saved, setSaved] = useState(false);
@@ -31,7 +31,6 @@ export default function Pin({ item, user }) {
   const handleDeleteClick = async (e) => {
     e.stopPropagation();
     dispatch(deletePin(item));
-    Router.reload(window.location.pathname);
   };
 
   return (
@@ -60,7 +59,12 @@ export default function Pin({ item, user }) {
                 className="absolute top-2 right-2 bg-red-500 opacity-70 hover:opacity-100 text-white font-bold px-5 py-1 text-base rounded-3xl"
               >
                 {isSaving ? (
-                  <ReactLoading type={"spin"} color={"white"} width={25} height={25}/>
+                  <ReactLoading
+                    type={"spin"}
+                    color={"white"}
+                    width={25}
+                    height={25}
+                  />
                 ) : (
                   "Save"
                 )}
@@ -94,11 +98,12 @@ export default function Pin({ item, user }) {
 
           <img src={item.pinUrl} className="rounded-lg " />
         </div>
-
-        <div className="w-full flex gap-3 items-center relative">
-          <img src={item.postedBy.picture} className="w-8 rounded-full" />
-          <p className="font-bold">{item.postedBy.name}</p>
-        </div>
+        <Link href={`/user/${item.postedBy.uid}`}>
+          <button className="w-full flex gap-3 items-center relative">
+            <img src={item.postedBy.picture} className="w-8 rounded-full" />
+            <p className="font-bold">{item.postedBy.name}</p>
+          </button>
+        </Link>
       </div>
     </Link>
   );

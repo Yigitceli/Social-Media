@@ -1,16 +1,22 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../axios";
 import { reHydrate } from "./pinSlice";
+import { deleteProfilePin } from "./profileSlice";
 
 export const deletePin = createAsyncThunk(
   "pins/deletePin",
   async (pin, thunkAPI) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/pin/${pin._id}`        
+        `http://localhost:5000/pin/${pin._id}`
       );
+      
+      
+      thunkAPI.dispatch(deleteProfilePin(pin));
       return response.data.payload;
-    } catch (error) {}
+    } catch (error) {
+      return thunkAPI.rejectWithValue([]);
+    }
   }
 );
 
@@ -18,20 +24,17 @@ export const createPin = createAsyncThunk(
   "pins/createPin",
   async (data, thunkAPI) => {
     try {
-      const response = await axios.post(
-        `http://localhost:5000/pin`,
-        {
-          pinUrl: data.imageUrl,
-          title: data.title,
-          description: data.description,
-          destination: data.destination,
-          category: data.category,
-        },        
-      );
+      const response = await axios.post(`http://localhost:5000/pin`, {
+        pinUrl: data.imageUrl,
+        title: data.title,
+        description: data.description,
+        destination: data.destination,
+        category: data.category,
+      });
 
       return response.data.payload;
     } catch (error) {
-      console.log(error);
+      return thunkAPI.rejectWithValue([]);
     }
   }
 );
@@ -42,13 +45,11 @@ export const searchPin = createAsyncThunk(
     try {
       const { data } = await axios.get(
         `http://localhost:5000/pin/search?query=${searchValue}`
-        
       );
-      console.log(data.payload);
 
       return data.payload;
     } catch (error) {
-      console.log(error);
+      return thunkAPI.rejectWithValue([]);
     }
   }
 );
@@ -60,11 +61,11 @@ export const makeComment = createAsyncThunk(
       const response = await axios.put(`pin/${data.pinId}/comment`, {
         comment: data.comment,
       });
-      
+
       thunkAPI.dispatch(reHydrate(response.data.payload.comments));
       return response.data.payload;
     } catch (error) {
-      console.log(error);
+      return thunkAPI.rejectWithValue([]);
     }
   }
 );
@@ -73,20 +74,11 @@ export const fetchPins = createAsyncThunk(
   "pins/fetchPins",
   async (data, thunkAPI) => {
     try {
-      const response = await axios.get(
-        `http://localhost:5000/pin?category=${data.slug}`,
-        {
-          headers: {
-            Authorization:
-              "Bearer " +
-              JSON.parse(window.localStorage.getItem("accessToken")),
-          },
-        }
-      );
+      const response = await axios.get(`/pin?category=${data.slug}`);
 
       return response.data.payload;
     } catch (error) {
-      console.log(error);
+      return thunkAPI.rejectWithValue([]);
     }
   }
 );

@@ -35,10 +35,11 @@ instance.interceptors.response.use(
               window.localStorage.getItem("refreshToken")
             ),
           });
-          const {access_token} = rs.data.payload;
+          const access_token = rs.data.payload;
+          
           
           window.localStorage.setItem(
-            "acessToken",
+            "accessToken",
             JSON.stringify(access_token)
           );
           return instance(originalConfig);

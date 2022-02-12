@@ -5,15 +5,12 @@ export const savePin = createAsyncThunk(
   "user/savePin",
   async (item, thunkAPI) => {
     try {
-      const response = await axios.put(
-        `http://localhost:5000/user/pin-save`,
-        {
-          item: item,
-        }        
-      );
+      const response = await axios.put(`http://localhost:5000/user/pin-save`, {
+        item: item,
+      });
       return item;
     } catch (error) {
-      console.log(error);
+      return thunkAPI.rejectWithValue([]);
     }
   }
 );

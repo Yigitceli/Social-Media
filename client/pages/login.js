@@ -29,8 +29,6 @@ function login() {
       window.localStorage.setItem("accessToken", JSON.stringify(accessToken));
       window.localStorage.setItem("refreshToken", JSON.stringify(refreshToken));
 
-      console.log(window.localStorage.getItem("accessToken"));
-      console.log(window.localStorage.getItem("refreshToken"));
       const response = await axios.post("http://localhost:5000/user/login", {
         displayName: data.user.displayName,
         googleId: data.user.uid,
