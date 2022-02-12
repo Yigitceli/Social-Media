@@ -7,6 +7,10 @@
     "start": "next start -p $PORT",
     "lint": "next lint"
   },
+  "engines": {
+    "node":"v16.13.0",
+    "npm":"8.1.0"
+  },
   "dependencies": {
     "@reduxjs/toolkit": "^1.7.2",
     "axios": "^0.25.0",
