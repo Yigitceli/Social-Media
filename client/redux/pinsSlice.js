@@ -8,7 +8,7 @@ export const deletePin = createAsyncThunk(
   async (pin, thunkAPI) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/pin/${pin._id}`
+        `pin/${pin._id}`
       );
       
       
@@ -24,7 +24,7 @@ export const createPin = createAsyncThunk(
   "pins/createPin",
   async (data, thunkAPI) => {
     try {
-      const response = await axios.post(`http://localhost:5000/pin`, {
+      const response = await axios.post(`pin`, {
         pinUrl: data.imageUrl,
         title: data.title,
         description: data.description,
@@ -44,7 +44,7 @@ export const searchPin = createAsyncThunk(
   async (searchValue, thunkAPI) => {
     try {
       const { data } = await axios.get(
-        `http://localhost:5000/pin/search?query=${searchValue}`
+        `pin/search?query=${searchValue}`
       );
 
       return data.payload;
@@ -74,7 +74,7 @@ export const fetchPins = createAsyncThunk(
   "pins/fetchPins",
   async (data, thunkAPI) => {
     try {
-      const response = await axios.get(`/pin?category=${data.slug}`);
+      const response = await axios.get(`pin?category=${data.slug}`);
 
       return response.data.payload;
     } catch (error) {

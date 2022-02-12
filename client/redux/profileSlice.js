@@ -5,7 +5,7 @@ export const fetchProfileData = createAsyncThunk(
   "userProfile/fetchProfileData",
   async (userId, thunkAPI) => {
     try {
-      const { data } = await axios.get(`http://localhost:5000/user/${userId}`);
+      const { data } = await axios.get(`user/${userId}`);
 
       thunkAPI.dispatch(fetchProfilePins(userId));
       return data.payload;
@@ -20,7 +20,7 @@ export const fetchProfilePins = createAsyncThunk(
   async (userId, thunkAPI) => {
     try {
       const { data } = await axios.get(
-        `http://localhost:5000/pin?userId=${userId}`
+        `pin?userId=${userId}`
       );
 
       return data.payload;

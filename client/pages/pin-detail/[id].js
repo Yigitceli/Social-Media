@@ -22,7 +22,7 @@ function id() {
 
   useEffect(async () => {
     if (query.id) {
-      const { data } = await axios.get(`http://localhost:5000/pin/${query.id}`);
+      const { data } = await axios.get(`pin/${query.id}`);
       setLoading(true);
       dispatch(hydrateData(data));
       setLoading(false);

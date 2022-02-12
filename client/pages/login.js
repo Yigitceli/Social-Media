@@ -29,7 +29,7 @@ function login() {
       window.localStorage.setItem("accessToken", JSON.stringify(accessToken));
       window.localStorage.setItem("refreshToken", JSON.stringify(refreshToken));
 
-      const response = await axios.post("http://localhost:5000/user/login", {
+      const response = await axios.post("http://localhost:5000/api/user/login", {
         displayName: data.user.displayName,
         googleId: data.user.uid,
         photoUrl: data.user.photoURL,

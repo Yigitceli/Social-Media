@@ -29,7 +29,7 @@ export default withAuth(Home);
 
 export async function getServerSideProps(context) {
   try {
-    const { data } = await axios.get("http://localhost:5000/pin");
+    const { data } = await axios.get("http://localhost:5000/api/pin");
     return {
       props: { data: data.payload }, // will be passed to the page component as props
     };
